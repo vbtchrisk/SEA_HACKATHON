@@ -25,8 +25,37 @@ router.get('/', (req, res) => {
     })
     .catch((err) => {
         res.json(err);
-    })
+    });
 
 });
+
+router.get('/details', (req, res) => {
+    const homeTeam = req.query.hometeam;
+    const awayTeam = req.query.awayteam;
+    const week = req.query.week || 2;
+    const year = req.query.year || 2016;
+
+    var options = {
+        uri: `http://api.sportradar.us/ncaafb-t1/${year}/REG/${week}/${awayTeam}/${homeTeam}/statistics.json`,
+        qs: {
+            api_key: API_KEY
+        }
+    };
+    console.log(options.uri);
+
+     rp(options)
+    .then((result) => {
+        console.log(result);
+        var gameDetails = {
+            data: JSON.parse(result)
+        }
+
+        res.json(gameDetails);
+
+    })
+    .catch((err) => {
+        res.json(err);
+    });
+})
 
 module.exports = router;
