@@ -1,20 +1,10 @@
-const rp = require('request-promise');
-const API_KEY = 'j4q82r8buyf3y2cxhthz9a94';
+var express = require('express');
+var app = express();
 
-const options = {
-    uri: 'http://api.sportradar.us/ncaafb-t1/2016/REG/2/SMU/BAY/summary.json',
-    qs: {
-        api_key: API_KEY
-    },
-    json: true
-}
+app.get('/', function (req, res) {
+  res.send('Hello World!');
+});
 
-rp(options)
-.then((response) => {
-    console.log(response);
-})
-.catch((err) => {
-    console.log(err);
-})
-
-
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!');
+});
