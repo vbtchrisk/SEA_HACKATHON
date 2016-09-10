@@ -56,6 +56,34 @@ router.get('/details', (req, res) => {
     .catch((err) => {
         res.json(err);
     });
-})
+});
+
+router.get('/roster', (req, res) => {
+    const weekNumber = req.query.week || 2;
+    const year = req.query.year || 2016;
+    const homeTeam = req.query.hometeam;
+    const awayTeam = req.query.awayteam;
+    var options = {
+        // http://api.sportradar.us/ncaafb-t1/2016/REG/2/SMU/BAY/roster.json?api_key=j4q82r8buyf3y2cxhthz9a94
+        uri: `http://api.sportradar.us/ncaafb-t1/${year}/REG/${weekNumber}/${awayTeam}/${homeTeam}/roster.json`,
+        qs: {
+            api_key: API_KEY
+        }
+    }
+
+    rp(options)
+    .then((result) => {
+        var roster = {
+            data: JSON.parse(result)
+        }
+
+        res.json(roster);
+
+    })
+    .catch((err) => {
+        res.json(err);
+    });
+
+});
 
 module.exports = router;
