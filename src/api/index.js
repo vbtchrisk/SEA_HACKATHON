@@ -29,6 +29,36 @@ router.get('/', (req, res) => {
 
 });
 
+router.get('/current', (req, res) => {
+    const weekNumber = req.query.week || 2;
+    var options = {
+        uri: `http://api.sportradar.us/ncaafb-t1/2016/REG/${weekNumber}/schedule.json`,
+        qs: {
+            api_key: API_KEY
+        }
+    }
+
+    rp(options)
+        .then((result) => {
+            const jsonResult = JSON.parse(result);
+             var games = _.filter(jsonResult.games, function (g) {
+                if(g.status === 'inprogress') {
+                    return g;
+                }
+            });
+            var schedule = {
+                data: games
+            }
+
+            res.json(schedule);
+
+        })
+        .catch((err) => {
+            res.json(err);
+        });
+
+});
+
 router.get('/:id', (req, res) => {
     const weekNumber = req.query.week || 2;
     var options = {
