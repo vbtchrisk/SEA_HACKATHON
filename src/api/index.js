@@ -59,6 +59,36 @@ router.get('/current', (req, res) => {
 
 });
 
+router.get('/completed', (req, res) => {
+    const weekNumber = req.query.week || 2;
+    var options = {
+        uri: `http://api.sportradar.us/ncaafb-t1/2016/REG/${weekNumber}/schedule.json`,
+        qs: {
+            api_key: API_KEY
+        }
+    }
+
+    rp(options)
+        .then((result) => {
+            const jsonResult = JSON.parse(result);
+             var games = _.filter(jsonResult.games, function (g) {
+                if(g.status === 'closed') {
+                    return g;
+                }
+            });
+            var schedule = {
+                data: games
+            }
+
+            res.json(schedule);
+
+        })
+        .catch((err) => {
+            res.json(err);
+        });
+
+});
+
 router.get('/:id', (req, res) => {
     const weekNumber = req.query.week || 2;
     var options = {
@@ -158,15 +188,17 @@ router.get('/:id/clock', (req, res) => {
                         const actionIdx = jsonResult.quarters[quarterIdx].pbp[pbpIdx].actions.length - 1;
 
                         var timeLeft = jsonResult.quarters[quarterIdx].pbp[pbpIdx].actions[actionIdx].clock;
+                        var quarter = jsonResult.quarters[quarterIdx].number;
 
-                        if(timeLeft === ':00') {
-                            console.log('final time');
+                        if(timeLeft === ':00' && quarter === 4) {
                             timeLeft = 'final';
+                        } else if (timeLeft === ':00' && quarter === 2) {
+                            timeLeft = 'half';
                         }
                         var returnResponse = {
                             data: {
                                 clockValue: timeLeft,
-                                quarterValue: jsonResult.quarters[quarterIdx].number
+                                quarterValue: quarter
                             }
                         }
 
