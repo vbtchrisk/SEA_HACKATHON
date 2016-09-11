@@ -85,7 +85,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.get('/:id/clock', (req, res) => {
-   
+
 
     const weekNumber = req.query.week || 2;
     var options = {
@@ -122,16 +122,18 @@ router.get('/:id/clock', (req, res) => {
 
                 rp(options2)
                     .then((result1) => {
-                       var jsonResult = JSON.parse(result1);
-                       const quarterIdx = jsonResult.quarters.length - 1;
-                       const pbpIdx = jsonResult.quarters[quarterIdx].pbp.length - 1;
-                       const actionIdx = jsonResult.quarters[quarterIdx].pbp[pbpIdx].actions.length - 1;
-                       var returnResponse = {
-                           clockValue: jsonResult.quarters[quarterIdx].pbp[pbpIdx].actions[actionIdx].clock,
-                           quarterValue: jsonResult.quarters[quarterIdx].number
-                       }
+                        var jsonResult = JSON.parse(result1);
+                        const quarterIdx = jsonResult.quarters.length - 1;
+                        const pbpIdx = jsonResult.quarters[quarterIdx].pbp.length - 1;
+                        const actionIdx = jsonResult.quarters[quarterIdx].pbp[pbpIdx].actions.length - 1;
+                        var returnResponse = {
+                            data: {
+                                clockValue: jsonResult.quarters[quarterIdx].pbp[pbpIdx].actions[actionIdx].clock,
+                                quarterValue: jsonResult.quarters[quarterIdx].number
+                            }
+                        }
 
-                       res.json(returnResponse);
+                        res.json(returnResponse);
                     })
                     .catch((err) => {
                         res.json(err);
