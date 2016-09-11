@@ -126,9 +126,16 @@ router.get('/:id/clock', (req, res) => {
                         const quarterIdx = jsonResult.quarters.length - 1;
                         const pbpIdx = jsonResult.quarters[quarterIdx].pbp.length - 1;
                         const actionIdx = jsonResult.quarters[quarterIdx].pbp[pbpIdx].actions.length - 1;
+
+                        var timeLeft = jsonResult.quarters[quarterIdx].pbp[pbpIdx].actions[actionIdx].clock;
+
+                        if(timeLeft === ':00') {
+                            console.log('final time');
+                            timeLeft = 'final';
+                        }
                         var returnResponse = {
                             data: {
-                                clockValue: jsonResult.quarters[quarterIdx].pbp[pbpIdx].actions[actionIdx].clock,
+                                clockValue: timeLeft,
                                 quarterValue: jsonResult.quarters[quarterIdx].number
                             }
                         }
